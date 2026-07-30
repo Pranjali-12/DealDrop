@@ -1,6 +1,11 @@
 package project.dealdrop.entity;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,7 +26,7 @@ import project.dealdrop.type.UserRole;
 @Getter
 @Setter
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -63,6 +68,16 @@ public class User {
     @PreUpdate
     void onUpdate() {
         this.updatedAt = LocalDateTime.now();
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public String getUsername() {
+        return "";
     }
 
 }

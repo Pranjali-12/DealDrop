@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import project.dealdrop.dto.AuthResponseDto;
 import project.dealdrop.dto.LoginRequestDto;
+import project.dealdrop.dto.LoginResponseDto;
 import project.dealdrop.dto.RegisterRequestDto;
 import project.dealdrop.service.AuthService;
 
@@ -26,7 +27,7 @@ public class AuthController {
     }
 
     @GetMapping("/login")
-    public AuthResponseDto login(@RequestBody @Valid LoginRequestDto loginRequestDto){
+    public LoginResponseDto login(@RequestBody @Valid LoginRequestDto loginRequestDto){
         return authService.login(loginRequestDto);
     }
 }

@@ -1,17 +1,18 @@
 package project.dealdrop.service;
-
-import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties.Authentication;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
 import project.dealdrop.dto.AuthResponseDto;
 import project.dealdrop.dto.LoginRequestDto;
+import project.dealdrop.dto.LoginResponseDto;
 import project.dealdrop.dto.RegisterRequestDto;
 import project.dealdrop.entity.User;
 import project.dealdrop.repository.UserRepository;
+import project.dealdrop.security.JwtService;
 
 @Service
 @AllArgsConstructor
@@ -21,7 +22,9 @@ public class AuthService {
 
     private final PasswordEncoder passwordEncoder;
 
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
+
+    private final JwtService jwtService;
 
     public AuthResponseDto register(RegisterRequestDto registerRequestDto){
         if(userRepository.existsByEmail(registerRequestDto.getEmail())){
@@ -38,19 +41,22 @@ public class AuthService {
         return new AuthResponseDto(true,"User registered successfully");
     }
 
-    public AuthResponseDto login(LoginRequestDto loginRequestDto){
+    public LoginResponseDto login(LoginRequestDto loginRequestDto){
+        // User user=userRepository.findByEmail(loginRequestDto.getEmail()).orElseThrow(()->new RuntimeException("Email not exist"));
+
+        // if(!passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())){
+        //     throw new RuntimeException("Invalid credentials");
+        // }
+
         Authentication authentication=authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(loginRequestDto.getEmail, loginRequestDto.getPassword())
+            new UsernamePasswordAuthenticationToken(loginRequestDto.getEmail(), loginRequestDto.getPassword())
         );
 
         User user=(User) authentication.getPrincipal();
-        // if(!userRepository.existsByEmail(loginRequestDto.getEmail())){
-        //     throw new RuntimeException("Email not exist");
-        // }
 
-        // User user=userRepository.findByEmail(loginRequestDto.getEmail()).orElseThrow();
+        String token=jwtService.generateAccessToken(user);
 
-        // return new AuthResponseDto(true,"User logged in successfully");
+        return new LoginResponseDto(user.getId(),token);
     }
 
 
