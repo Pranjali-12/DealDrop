@@ -1,5 +1,6 @@
 package project.dealdrop.security;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
@@ -9,6 +10,7 @@ import java.util.Date;
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import project.dealdrop.entity.User;
@@ -35,4 +37,34 @@ public class JwtService {
                         .signWith(getSignInKey())
                         .compact();
     }
+
+    public String getUsernameFromToken(String token){
+        Claims claim=Jwts.parser()
+                            .verifyWith(getSignInKey())
+                            .build()
+                            .parseSignedClaims(token)
+                            .getPayload();
+
+        return claim.getSubject();
+    }
+
+    public Date getExpirationDate(String token){
+        Claims claim=Jwts.parser()
+                            .verifyWith(getSignInKey())
+                            .build()
+                            .parseSignedClaims(token)
+                            .getPayload();
+
+        return claim.getExpiration();
+    }
+
+    public Boolean isTokenExpired(String token){
+        return getExpirationDate(token).before(new Date());
+    }
+
+    public Boolean isTokenValid(String token,UserDetails userDetails){
+        String email=getUsernameFromToken(token);
+        return email.equals(userDetails.getUsername())&& !isTokenExpired(token);
+    }
+
 }
