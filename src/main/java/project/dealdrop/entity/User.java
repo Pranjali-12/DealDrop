@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Column;
@@ -31,7 +32,7 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true,nullable = false)
+    @Column(unique = true, nullable = false)
     private String email;
 
     private String name;
@@ -39,10 +40,10 @@ public class User implements UserDetails {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private UserRole role=UserRole.BIDDER;
+    private UserRole role = UserRole.BIDDER;
 
     @Enumerated(EnumType.STRING)
-    private SellerRequest sellerRequest=SellerRequest.NONE;
+    private SellerRequest sellerRequest = SellerRequest.NONE;
 
     private String sellerType;
 
@@ -50,9 +51,9 @@ public class User implements UserDetails {
 
     private String sellerReason;
 
-    private Boolean isVerified=false;
+    private Boolean isVerified = false;
 
-    private Boolean isBlocked=false;
+    private Boolean isBlocked = false;
 
     private LocalDateTime createdAt;
 
@@ -72,12 +73,13 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.emptyList();
+        return Collections.singletonList(
+                new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
     @Override
     public String getUsername() {
-        return "";
+        return email;
     }
 
 }

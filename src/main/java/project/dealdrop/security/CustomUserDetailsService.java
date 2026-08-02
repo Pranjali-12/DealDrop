@@ -11,7 +11,7 @@ import project.dealdrop.repository.UserRepository;
 
 @Service
 @AllArgsConstructor
-public class CustomUserDetails implements UserDetailsService {
+public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
