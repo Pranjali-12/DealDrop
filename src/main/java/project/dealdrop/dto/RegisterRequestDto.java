@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import project.dealdrop.type.UserRole;
 
 @Data
 public class RegisterRequestDto {
@@ -17,4 +18,6 @@ public class RegisterRequestDto {
     @NotBlank
     @Size(min = 8,max = 20)
     private String password;
+
+    private UserRole role;
 }

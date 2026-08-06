@@ -13,6 +13,7 @@ import project.dealdrop.dto.RegisterRequestDto;
 import project.dealdrop.entity.User;
 import project.dealdrop.repository.UserRepository;
 import project.dealdrop.security.JwtService;
+import project.dealdrop.type.UserRole;
 
 @Service
 @AllArgsConstructor
@@ -35,6 +36,10 @@ public class AuthService {
         user.setName(registerRequestDto.getName());
         user.setPassword(passwordEncoder.encode(registerRequestDto.getPassword()));
         user.setEmail(registerRequestDto.getEmail());
+
+        if(registerRequestDto.getRole()==UserRole.SELLER){
+            user.setRole(registerRequestDto.getRole());
+        }
 
         userRepository.save(user);
 

@@ -35,7 +35,7 @@ public class Auction {
 
     private Integer bidCount;
 
-    private LocalDateTime starTime;
+    private LocalDateTime startTime;
 
     private LocalDateTime endTIme;
 
