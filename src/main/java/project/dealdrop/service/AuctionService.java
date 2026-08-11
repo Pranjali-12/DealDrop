@@ -2,6 +2,7 @@ package project.dealdrop.service;
 
 import java.time.LocalDateTime;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -22,8 +23,9 @@ public class AuctionService {
 
     private final AuthenticationService authenticationService;
 
+    private final ModelMapper modelMapper;
+
     public CreateAuctionResponseDto createAuction(CreateAuctionRequestDto createAuctionRequestDto) {
-        Auction auction = new Auction();
 
         if (createAuctionRequestDto.getStartTime().isBefore(LocalDateTime.now())
                 || createAuctionRequestDto.getStartTime().isEqual(LocalDateTime.now())) {
@@ -41,33 +43,33 @@ public class AuctionService {
             throw new RuntimeException("Only sellers can create auctions.");
         }
 
-        auction.setTitle(createAuctionRequestDto.getTitle());
-        auction.setDescription(createAuctionRequestDto.getDescription());
-        auction.setStartTime(createAuctionRequestDto.getStartTime());
-        auction.setEndTIme(createAuctionRequestDto.getEndTIme());
-        auction.setStartingPrice(createAuctionRequestDto.getStartingPrice());
+        Auction auction = modelMapper.map(createAuctionRequestDto, Auction.class);
+        // auction.setTitle(createAuctionRequestDto.getTitle());
+        // auction.setDescription(createAuctionRequestDto.getDescription());
+        // auction.setStartTime(createAuctionRequestDto.getStartTime());
+        // auction.setEndTIme(createAuctionRequestDto.getEndTIme());
+        // auction.setStartingPrice(createAuctionRequestDto.getStartingPrice());
+        // auction.setImage(createAuctionRequestDto.getImage());
+        // auction.setCategory(createAuctionRequestDto.getCategory());
         auction.setCurrentPrice(auction.getStartingPrice());
         auction.setBidCount(0);
         auction.setStatus(AuctionStatus.UPCOMING);
-        auction.setImage(createAuctionRequestDto.getImage());
-        auction.setCategory(createAuctionRequestDto.getCategory());
         auction.setCreatedAt(LocalDateTime.now());
         auction.setUpdatedAt(LocalDateTime.now());
         auction.setIsBlocked(false);
-        
         auction.setSeller(seller);
 
         auctionRepository.save(auction);
 
-        CreateAuctionResponseDto responseDto = new CreateAuctionResponseDto();
-        responseDto.setTitle(auction.getTitle());
-        responseDto.setDescription(auction.getDescription());
-        responseDto.setStartTime(auction.getStartTime());
-        responseDto.setEndTIme(auction.getEndTIme());
-        responseDto.setStartingPrice(auction.getStartingPrice());
-        responseDto.setImage(auction.getImage());
-        responseDto.setStatus(auction.getStatus());
-        responseDto.setCategory(auction.getCategory());
+        CreateAuctionResponseDto responseDto = modelMapper.map(auction, CreateAuctionResponseDto.class);
+        // responseDto.setTitle(auction.getTitle());
+        // responseDto.setDescription(auction.getDescription());
+        // responseDto.setStartTime(auction.getStartTime());
+        // responseDto.setEndTIme(auction.getEndTIme());
+        // responseDto.setStartingPrice(auction.getStartingPrice());
+        // responseDto.setImage(auction.getImage());
+        // responseDto.setStatus(auction.getStatus());
+        // responseDto.setCategory(auction.getCategory());
         responseDto.setSellerName(auction.getSeller().getName());
 
         return responseDto;
