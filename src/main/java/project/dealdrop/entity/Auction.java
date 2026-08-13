@@ -11,6 +11,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import lombok.Getter;
 import lombok.Setter;
 import project.dealdrop.type.AuctionCategory;
@@ -22,7 +24,7 @@ import project.dealdrop.type.AuctionStatus;
 public class Auction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
 
     private String title;
 
@@ -37,7 +39,7 @@ public class Auction {
 
     private LocalDateTime startTime;
 
-    private LocalDateTime endTIme;
+    private LocalDateTime endTime;
 
     private String image;
 
@@ -64,5 +66,17 @@ public class Auction {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    @PrePersist
+    void onCreate() {
+        LocalDateTime now = LocalDateTime.now();
+        this.createdAt = now;
+        this.updatedAt = now;
+    }
+
+    @PreUpdate
+    void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 
 }
