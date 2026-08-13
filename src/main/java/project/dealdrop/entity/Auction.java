@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.Setter;
 import project.dealdrop.type.AuctionCategory;
@@ -66,6 +67,9 @@ public class Auction {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    @Version
+    private Long version;
 
     @PrePersist
     void onCreate() {

@@ -10,7 +10,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
-import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -35,9 +34,6 @@ public class Bid {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
-
-    @Version
-    private Long version;
 
     @PrePersist
     void onCreate() {

@@ -40,8 +40,8 @@ public class JwtService {
     }
 
     public String getUsernameFromToken(String token) {
-        System.out.println("Issued at : " + new Date(System.currentTimeMillis()));
-        System.out.println("Expires at: " + new Date(System.currentTimeMillis() + jwtExpiration));
+        // System.out.println("Issued at : " + new Date(System.currentTimeMillis()));
+        // System.out.println("Expires at: " + new Date(System.currentTimeMillis() + jwtExpiration));
         Claims claim = Jwts.parser()
                 .verifyWith(getSignInKey())
                 .build()
