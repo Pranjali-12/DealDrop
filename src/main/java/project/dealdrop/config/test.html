@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Auction WebSocket Test</title>
+</head>
+
+<body>
+
+<h1>Auction WebSocket Test</h1>
+
+<p id="status">Connecting...</p>
+
+<h2>Incoming Bids</h2>
+
+<ul id="bids"></ul>
+
+<script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7/bundles/stomp.umd.min.js"></script>
+
+<script>
+    const AUCTION_ID = 1;
+
+    const status = document.getElementById("status");
+    const bids = document.getElementById("bids");
+
+    const stompClient = new StompJs.Client({
+        brokerURL: 'ws://localhost:8080/ws',
+
+        debug: function (str) {
+            console.log(str);
+        },
+
+        reconnectDelay: 5000
+    });
+
+    stompClient.onConnect = (frame) => {
+
+        console.log("Connected:", frame);
+
+        status.innerText = "🟢 Connected to WebSocket";
+
+        stompClient.subscribe(`/topic/auction/${AUCTION_ID}`, (message) => {
+
+            console.log("New bid:", message.body);
+
+            const bid = JSON.parse(message.body);
+
+            const li = document.createElement("li");
+
+            li.innerText =
+                "User " + bid.userId +
+                " bid ₹" + bid.amount +
+                " at " + bid.placedAt;
+
+            bids.prepend(li);
+        });
+    };
+
+    stompClient.onStompError = (frame) => {
+        console.error("STOMP ERROR:", frame);
+
+        status.innerText = "🔴 STOMP Error";
+    };
+
+    stompClient.onWebSocketError = (error) => {
+        console.error("WebSocket Error:", error);
+
+        status.innerText = "🔴 WebSocket Error";
+    };
+
+    stompClient.onWebSocketClose = () => {
+        console.log("WebSocket closed");
+
+        status.innerText = "🔴 Disconnected";
+    };
+
+    stompClient.activate();
+</script>
+
+</body>
+</html>

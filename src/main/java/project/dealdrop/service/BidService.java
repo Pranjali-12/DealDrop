@@ -2,6 +2,7 @@ package project.dealdrop.service;
 
 import java.time.LocalDateTime;
 
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
@@ -24,6 +25,8 @@ public class BidService {
     private final UserRepository userRepository;
 
     private final BidRepository bidRepository;
+
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Transactional
     public BidResponseDto placedBid(Long userId,Long auctionId,Double amount) {
@@ -64,6 +67,8 @@ public class BidService {
         response.setAuctionId(auctionId);
         response.setUserId(userId);
         response.setPlacedAt(bid.getCreatedAt());
+
+        messagingTemplate.convertAndSend("/topic/auction/"+auctionId,response);
 
         return response;
 
