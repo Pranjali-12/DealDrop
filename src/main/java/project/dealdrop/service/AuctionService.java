@@ -1,6 +1,7 @@
 package project.dealdrop.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -73,6 +74,22 @@ public class AuctionService {
         responseDto.setSellerName(auction.getSeller().getName());
 
         return responseDto;
+    }
+
+    public List<Auction> getAllAuctions() {
+
+        List<Auction> list=auctionRepository.findAll();
+        return list;
+    }
+
+    public Auction getAuctionById(Long id) {
+        Auction auction=auctionRepository.findById(id).orElseThrow();
+        return auction;
+    }
+
+    public List<Auction> getMyAuctions(User user) {
+        List<Auction> list=auctionRepository.findAllBySellerId(user.getId());
+        return list;
     }
 
 }

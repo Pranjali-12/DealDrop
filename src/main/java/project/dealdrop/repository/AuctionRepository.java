@@ -14,6 +14,8 @@ import project.dealdrop.type.AuctionStatus;
 public interface AuctionRepository extends JpaRepository<Auction,Long> {
     Optional<Auction> findById(Long id);
 
+    List<Auction> findAllBySellerId(Long sellerId);
+
     List<Auction> findByStatusAndStartTimeLessThanEqual(AuctionStatus status, LocalDateTime time);
 
     List<Auction> findByStatusAndEndTimeLessThanEqual(AuctionStatus status, LocalDateTime time);
