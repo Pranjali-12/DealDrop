@@ -60,6 +60,7 @@ public class WebSecurityConfig {
                 .requestMatchers("/test/**").permitAll()
                 .requestMatchers("/ws/**").permitAll()
                 .requestMatchers("/auction","/auction/{auctionId}").permitAll()
+                .requestMatchers("/bid/{auctionId}/getBidHistory").permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

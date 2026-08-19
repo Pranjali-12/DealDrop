@@ -1,13 +1,16 @@
 package project.dealdrop.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import project.dealdrop.dto.BidHistoryResponseDto;
 import project.dealdrop.dto.BidResponseDto;
+import project.dealdrop.dto.GetMyBidsResponseDto;
 import project.dealdrop.entity.Auction;
 import project.dealdrop.entity.Bid;
 import project.dealdrop.entity.User;
@@ -71,6 +74,45 @@ public class BidService {
         messagingTemplate.convertAndSend("/topic/auction/"+auctionId,response);
 
         return response;
+
+    }
+
+    private BidHistoryResponseDto mapToDto1(Bid bid){
+        BidHistoryResponseDto dto=new BidHistoryResponseDto();
+        dto.setBidderName(bid.getBidder().getName());
+        dto.setAmount(bid.getAmount());
+        dto.setPlacedAt(bid.getCreatedAt());
+
+        return dto;
+    }
+
+    public List<BidHistoryResponseDto> getBidHistory(Long auctionId) {
+        List<Bid> list=bidRepository.findAllByAuctionId(auctionId);
+        
+        List<BidHistoryResponseDto> bids=list.stream()
+            .map(this::mapToDto1)
+            .toList();
+
+        return bids;
+    }
+
+    private GetMyBidsResponseDto mapToDto2(Bid bid){
+        GetMyBidsResponseDto dto=new GetMyBidsResponseDto();
+        dto.setAuctionTitle(bid.getAuction().getTitle());
+        dto.setAmount(bid.getAmount());
+        dto.setPlacedAt(bid.getCreatedAt());
+
+        return dto;
+    }
+
+    public List<GetMyBidsResponseDto> getMyBids(Long id) {
+        List<Bid> list=bidRepository.findAllByBidderId(id);
+        
+        List<GetMyBidsResponseDto> bids=list.stream()
+            .map(this::mapToDto2)
+            .toList();
+
+        return bids;
 
     }
     
