@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import project.dealdrop.dto.CreateAuctionRequestDto;
 import project.dealdrop.dto.CreateAuctionResponseDto;
+import project.dealdrop.dto.GetAuctionResponseDto;
 import project.dealdrop.entity.Auction;
 import project.dealdrop.entity.User;
 import project.dealdrop.repository.AuctionRepository;
@@ -76,20 +77,48 @@ public class AuctionService {
         return responseDto;
     }
 
-    public List<Auction> getAllAuctions() {
+    private GetAuctionResponseDto mapToDto(Auction auction) {
+        GetAuctionResponseDto dto=new GetAuctionResponseDto();
+        dto.setTitle(auction.getTitle());
+        dto.setStatus(auction.getStatus());
+        dto.setStartingPrice(auction.getStartingPrice());
+        dto.setCurrentPrice(auction.getCurrentPrice());
+        dto.setBidCount(auction.getBidCount());
+        
+        dto.setSeller(
+                auction.getSeller() != null ? auction.getSeller().getName() : null);
 
-        List<Auction> list=auctionRepository.findAll();
-        return list;
+        dto.setHighestBidder(
+                auction.getHighestBidder() != null ? auction.getHighestBidder().getName() : null);
+
+        dto.setWinner(
+                auction.getWinner() != null ? auction.getWinner().getName() : null);
+
+        return dto;
     }
 
-    public Auction getAuctionById(Long id) {
-        Auction auction=auctionRepository.findById(id).orElseThrow();
-        return auction;
+    public List<GetAuctionResponseDto> getAllAuctions() {
+
+        List<Auction> list = auctionRepository.findAll();
+        List<GetAuctionResponseDto> dtoList = list.stream()
+                .map(this::mapToDto)
+                .toList();
+        return dtoList;
+
     }
 
-    public List<Auction> getMyAuctions(User user) {
-        List<Auction> list=auctionRepository.findAllBySellerId(user.getId());
-        return list;
+    public GetAuctionResponseDto getAuctionById(Long id) {
+        Auction auction = auctionRepository.findById(id).orElseThrow();
+        GetAuctionResponseDto auctionDto = mapToDto(auction);
+        return auctionDto;
+    }
+
+    public List<GetAuctionResponseDto> getMyAuctions(User user) {
+        List<Auction> list = auctionRepository.findAllBySellerId(user.getId());
+        List<GetAuctionResponseDto> dtoList = list.stream()
+                .map(this::mapToDto)
+                .toList();
+        return dtoList;
     }
 
 }

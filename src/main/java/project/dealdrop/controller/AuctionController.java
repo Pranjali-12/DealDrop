@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import project.dealdrop.dto.CreateAuctionRequestDto;
 import project.dealdrop.dto.CreateAuctionResponseDto;
-import project.dealdrop.entity.Auction;
+import project.dealdrop.dto.GetAuctionResponseDto;
 import project.dealdrop.entity.User;
 import project.dealdrop.security.AuthenticationService;
 import project.dealdrop.service.AuctionService;
@@ -33,18 +33,18 @@ public class AuctionController {
         return ResponseEntity.ok(auctionService.createAuction(createAuctionRequestDto));
     }
 
-    @GetMapping("/")
-    public ResponseEntity<List<Auction>> GetAllAuctions(){
+    @GetMapping("")
+    public ResponseEntity<List<GetAuctionResponseDto>> GetAllAuctions(){
         return ResponseEntity.ok(auctionService.getAllAuctions());
     }
 
     @GetMapping("/{auctionId}")
-    public ResponseEntity<Auction> GetAuctionById(@PathVariable Long auctionId){
+    public ResponseEntity<GetAuctionResponseDto> GetAuctionById(@PathVariable Long auctionId){
         return ResponseEntity.ok(auctionService.getAuctionById(auctionId));
     }
 
     @GetMapping("/myauctions")
-    public ResponseEntity<List<Auction>> GetMyAuctions(){
+    public ResponseEntity<List<GetAuctionResponseDto>> GetMyAuctions(){
         User user=authenticationService.getCurrentUser();
         return ResponseEntity.ok(auctionService.getMyAuctions(user));
     }
