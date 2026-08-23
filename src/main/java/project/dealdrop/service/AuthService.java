@@ -1,4 +1,7 @@
 package project.dealdrop.service;
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -10,9 +13,11 @@ import project.dealdrop.dto.AuthResponseDto;
 import project.dealdrop.dto.LoginRequestDto;
 import project.dealdrop.dto.LoginResponseDto;
 import project.dealdrop.dto.RegisterRequestDto;
+import project.dealdrop.dto.RequestSellerDto;
 import project.dealdrop.entity.User;
 import project.dealdrop.repository.UserRepository;
 import project.dealdrop.security.JwtService;
+import project.dealdrop.type.SellerRequest;
 import project.dealdrop.type.UserRole;
 
 @Service
@@ -64,5 +69,44 @@ public class AuthService {
         return new LoginResponseDto(user.getId(),token);
     }
 
+    public ResponseEntity<String> requestForSeller(RequestSellerDto requestSellerDto,User user) {
+        if(user.getRole()==UserRole.SELLER){
+            throw new RuntimeException("Already a seller");
+        }
 
+        user.setSellerCategory(requestSellerDto.getSellerCategory());
+        user.setSellerReason(requestSellerDto.getSellerReason());
+        user.setSellerRequest(SellerRequest.PENDING);
+
+        userRepository.save(user);
+
+        return ResponseEntity.ok("Request has been sent");
+    }
+
+    public List<User>getRequestedSeller(User user){
+        if(user.getRole()!=UserRole.ADMIN){
+            throw new RuntimeException("Accessed Denied");
+        }
+
+        List<User> list=userRepository.findBysellerRequest(SellerRequest.PENDING);
+
+        return list;
+    }
+
+    public String changeRequestStatus(Long userId,SellerRequest sellerRequest){
+        User user=userRepository.findById(userId).orElseThrow();
+
+        if(sellerRequest==SellerRequest.APPROVED){
+            user.setSellerRequest(sellerRequest);
+            user.setRole(UserRole.SELLER);
+        }
+
+        if(sellerRequest==SellerRequest.REJECTED){
+            user.setSellerRequest(sellerRequest);
+        }
+
+        userRepository.save(user);
+        
+        return "Request Status has been changed";
+    }
 }
