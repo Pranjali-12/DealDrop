@@ -42,7 +42,7 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(registerRequestDto.getPassword()));
         user.setEmail(registerRequestDto.getEmail());
 
-        if(registerRequestDto.getRole()==UserRole.SELLER){
+        if(registerRequestDto.getRole()==UserRole.SELLER || registerRequestDto.getRole()==UserRole.ADMIN){
             user.setRole(registerRequestDto.getRole());
         }
 
@@ -101,12 +101,16 @@ public class AuthService {
             user.setRole(UserRole.SELLER);
         }
 
-        if(sellerRequest==SellerRequest.REJECTED){
+        else if(sellerRequest==SellerRequest.REJECTED){
             user.setSellerRequest(sellerRequest);
         }
 
+        else{
+            throw new IllegalArgumentException("Seller Request is invalid");
+        }
+
         userRepository.save(user);
-        
+
         return "Request Status has been changed";
     }
 }

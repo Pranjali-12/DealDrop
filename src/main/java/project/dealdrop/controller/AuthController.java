@@ -19,6 +19,7 @@ import project.dealdrop.dto.LoginRequestDto;
 import project.dealdrop.dto.LoginResponseDto;
 import project.dealdrop.dto.RegisterRequestDto;
 import project.dealdrop.dto.RequestSellerDto;
+import project.dealdrop.dto.changeStatusDto;
 import project.dealdrop.entity.User;
 import project.dealdrop.security.AuthenticationService;
 import project.dealdrop.service.AuthService;
@@ -59,7 +60,7 @@ public class AuthController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/changerequeststatus/{userId}")
-    public ResponseEntity<String> changeStatus(@PathVariable Long userId,SellerRequest sellerRequest){
-        return ResponseEntity.ok(authService.changeRequestStatus(userId,sellerRequest));
+    public ResponseEntity<String> changeStatus(@PathVariable Long userId,@RequestBody changeStatusDto changeStatusDto){
+        return ResponseEntity.ok(authService.changeRequestStatus(userId,changeStatusDto.getSellerRequest()));
     }
 }
