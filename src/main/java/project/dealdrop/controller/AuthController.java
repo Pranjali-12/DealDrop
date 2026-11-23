@@ -23,7 +23,6 @@ import project.dealdrop.dto.changeStatusDto;
 import project.dealdrop.entity.User;
 import project.dealdrop.security.AuthenticationService;
 import project.dealdrop.service.AuthService;
-import project.dealdrop.type.SellerRequest;
 
 @RestController
 @RequiredArgsConstructor
