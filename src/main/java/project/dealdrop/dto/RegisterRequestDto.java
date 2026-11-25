@@ -8,15 +8,17 @@ import project.dealdrop.type.UserRole;
 
 @Data
 public class RegisterRequestDto {
-    @NotBlank
-    @Email
+    
+    @NotBlank(message = "Email is required")
+    @Email(message = "Invalid email format")
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "Name is required")
+    @Size(min = 2, max = 50, message = "Name must be between 2 and 50 characters")
     private String name;
 
-    @NotBlank
-    @Size(min = 8,max = 20)
+    @NotBlank(message = "Password is required")
+    @Size(min = 8, max = 64, message = "Password must be between 8 and 64 characters")
     private String password;
 
     private UserRole role;

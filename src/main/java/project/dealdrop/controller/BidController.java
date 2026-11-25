@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import project.dealdrop.dto.BidHistoryResponseDto;
 import project.dealdrop.dto.BidResponseDto;
@@ -28,7 +29,7 @@ public class BidController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/{auctionId}/placedbid")
-    public ResponseEntity<BidResponseDto> placedBid(@RequestBody CreateBidRequestDto createBidRequestDto,@PathVariable Long auctionId){
+    public ResponseEntity<BidResponseDto> placedBid(@Valid @RequestBody CreateBidRequestDto createBidRequestDto,@PathVariable Long auctionId){
         User user=authenticationService.getCurrentUser();
         return ResponseEntity.ok(bidService.placedBid(user.getId(),auctionId,createBidRequestDto.getAmount()));
     }

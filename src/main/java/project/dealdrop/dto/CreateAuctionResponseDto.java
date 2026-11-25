@@ -24,7 +24,7 @@ public class CreateAuctionResponseDto {
 
     private LocalDateTime startTime;
 
-    private LocalDateTime endTIme;
+    private LocalDateTime endTime;
 
     private String image;
 

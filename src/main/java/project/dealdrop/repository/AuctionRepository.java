@@ -18,5 +18,5 @@ public interface AuctionRepository extends JpaRepository<Auction,Long> {
 
     List<Auction> findByStatusAndStartTimeLessThanEqual(AuctionStatus status, LocalDateTime time);
 
-    List<Auction> findByStatusAndEndTimeLessThanEqual(AuctionStatus status, LocalDateTime time);
+    List<Auction> findByStatusAndendTimeLessThanEqual(AuctionStatus status, LocalDateTime time);
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import project.dealdrop.dto.CreateAuctionRequestDto;
 import project.dealdrop.dto.CreateAuctionResponseDto;
@@ -29,7 +30,7 @@ public class AuctionController {
 
     @PreAuthorize("hasRole('SELLER')")
     @PostMapping("/create")
-    public ResponseEntity<CreateAuctionResponseDto> createAuction(@RequestBody CreateAuctionRequestDto createAuctionRequestDto){
+    public ResponseEntity<CreateAuctionResponseDto> createAuction(@Valid @RequestBody CreateAuctionRequestDto createAuctionRequestDto){
         return ResponseEntity.ok(auctionService.createAuction(createAuctionRequestDto));
     }
 

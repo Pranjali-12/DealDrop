@@ -45,7 +45,7 @@ public class AuthController {
 
     @PreAuthorize("hasRole('BIDDER')")
     @PostMapping("/request-seller")
-    public ResponseEntity<String> requestForSeller(@RequestBody RequestSellerDto requestSellerDto){
+    public ResponseEntity<String> requestForSeller(@Valid @RequestBody RequestSellerDto requestSellerDto){
         User user=authenticationService.getCurrentUser();
         return authService.requestForSeller(requestSellerDto,user);
     }
@@ -59,7 +59,7 @@ public class AuthController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/changerequeststatus/{userId}")
-    public ResponseEntity<String> changeStatus(@PathVariable Long userId,@RequestBody changeStatusDto changeStatusDto){
+    public ResponseEntity<String> changeStatus(@PathVariable Long userId,@Valid  @RequestBody changeStatusDto changeStatusDto){
         return ResponseEntity.ok(authService.changeRequestStatus(userId,changeStatusDto.getSellerRequest()));
     }
 }

@@ -37,7 +37,7 @@ public class BidService {
 
         User user=userRepository.findById(userId).orElseThrow();
 
-        if(auction.getStatus()!=AuctionStatus.LIVE || auction.getEndTime().isBefore(LocalDateTime.now())){
+        if(auction.getStatus()!=AuctionStatus.LIVE || auction.getendTime().isBefore(LocalDateTime.now())){
             throw new RuntimeException("Auction is not live");
         }
 

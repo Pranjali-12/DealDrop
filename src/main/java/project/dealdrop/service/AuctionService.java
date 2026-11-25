@@ -14,6 +14,9 @@ import project.dealdrop.entity.Auction;
 import project.dealdrop.entity.User;
 import project.dealdrop.repository.AuctionRepository;
 import project.dealdrop.security.AuthenticationService;
+import project.dealdrop.exception.BadRequestException;
+import project.dealdrop.exception.ForbiddenException;
+import project.dealdrop.exception.ResourceNotFoundException;
 import project.dealdrop.type.AuctionStatus;
 import project.dealdrop.type.UserRole;
 
@@ -31,25 +34,25 @@ public class AuctionService {
 
         if (createAuctionRequestDto.getStartTime().isBefore(LocalDateTime.now())
                 || createAuctionRequestDto.getStartTime().isEqual(LocalDateTime.now())) {
-            throw new RuntimeException("Enter Valid Start Date");
+            throw new BadRequestException("Enter Valid Start Date");
         }
 
-        if (createAuctionRequestDto.getEndTIme().isBefore(createAuctionRequestDto.getStartTime())
-                || createAuctionRequestDto.getEndTIme().isEqual(createAuctionRequestDto.getStartTime())) {
-            throw new RuntimeException("Enter Valid End Date");
+        if (createAuctionRequestDto.getendTime().isBefore(createAuctionRequestDto.getStartTime())
+                || createAuctionRequestDto.getendTime().isEqual(createAuctionRequestDto.getStartTime())) {
+            throw new BadRequestException("Enter Valid End Date");
         }
 
         User seller = authenticationService.getCurrentUser();
 
         if (seller.getRole() != UserRole.SELLER) {
-            throw new RuntimeException("Only sellers can create auctions.");
+            throw new ForbiddenException("Only sellers can create auctions.");
         }
 
         Auction auction = modelMapper.map(createAuctionRequestDto, Auction.class);
         // auction.setTitle(createAuctionRequestDto.getTitle());
         // auction.setDescription(createAuctionRequestDto.getDescription());
         // auction.setStartTime(createAuctionRequestDto.getStartTime());
-        // auction.setEndTIme(createAuctionRequestDto.getEndTIme());
+        // auction.setendTime(createAuctionRequestDto.getendTime());
         // auction.setStartingPrice(createAuctionRequestDto.getStartingPrice());
         // auction.setImage(createAuctionRequestDto.getImage());
         // auction.setCategory(createAuctionRequestDto.getCategory());
@@ -67,7 +70,7 @@ public class AuctionService {
         // responseDto.setTitle(auction.getTitle());
         // responseDto.setDescription(auction.getDescription());
         // responseDto.setStartTime(auction.getStartTime());
-        // responseDto.setEndTIme(auction.getEndTIme());
+        // responseDto.setendTime(auction.getendTime());
         // responseDto.setStartingPrice(auction.getStartingPrice());
         // responseDto.setImage(auction.getImage());
         // responseDto.setStatus(auction.getStatus());
@@ -108,7 +111,7 @@ public class AuctionService {
     }
 
     public GetAuctionResponseDto getAuctionById(Long id) {
-        Auction auction = auctionRepository.findById(id).orElseThrow();
+        Auction auction = auctionRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Auction doesn't exist"));
         GetAuctionResponseDto auctionDto = mapToDto(auction);
         return auctionDto;
     }

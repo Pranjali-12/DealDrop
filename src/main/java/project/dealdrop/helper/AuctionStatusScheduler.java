@@ -34,7 +34,7 @@ public class AuctionStatusScheduler {
         }
 
         // LIVE -> ENDED
-        List<Auction> toEnd=auctionRepository.findByStatusAndEndTimeLessThanEqual(AuctionStatus.LIVE,now);
+        List<Auction> toEnd=auctionRepository.findByStatusAndendTimeLessThanEqual(AuctionStatus.LIVE,now);
 
         for(Auction auction:toEnd){
             auction.setStatus(AuctionStatus.ENDED);
