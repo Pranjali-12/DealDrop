@@ -2,6 +2,9 @@ package project.dealdrop.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -16,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import project.dealdrop.dto.AuthResponseDto;
 import project.dealdrop.dto.RegisterRequestDto;
 import project.dealdrop.entity.User;
+import project.dealdrop.exception.DuplicateResourceException;
 import project.dealdrop.repository.UserRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,7 +35,7 @@ public class AuthServiceTest {
 
 
     @Test 
-    void register_newUser_withEncodedPass(){
+    void register_newUser_withEncodedPassAndSaves(){
         // arrange
         RegisterRequestDto dto=new RegisterRequestDto();
         dto.setEmail("pk@gmail.com");
@@ -54,5 +58,23 @@ public class AuthServiceTest {
         assertEquals("encodedPass",saved.getPassword());
 
         assertNotNull(response);
+    }
+
+    @Test
+    void register_existingEmail_throwsDuplicateException(){
+        // arrange
+        RegisterRequestDto dto=new RegisterRequestDto();
+        dto.setEmail("sk@gmail.com");
+        dto.setName("Pranjali");
+        dto.setPassword("pk123");
+
+        // act
+        when(userRepository.existsByEmail("sk@gmail.com")).thenReturn(true);
+
+        // assert
+        assertThrows(DuplicateResourceException.class,()->authService.register(dto));
+        verify(userRepository,never()).save(any());
+        verify(passwordEncoder,never()).encode(any());
+
     }
 }
