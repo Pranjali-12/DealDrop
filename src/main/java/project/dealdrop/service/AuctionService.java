@@ -37,8 +37,8 @@ public class AuctionService {
             throw new BadRequestException("Enter Valid Start Date");
         }
 
-        if (createAuctionRequestDto.getendTime().isBefore(createAuctionRequestDto.getStartTime())
-                || createAuctionRequestDto.getendTime().isEqual(createAuctionRequestDto.getStartTime())) {
+        if (createAuctionRequestDto.getEndTime().isBefore(createAuctionRequestDto.getStartTime())
+                || createAuctionRequestDto.getEndTime().isEqual(createAuctionRequestDto.getStartTime())) {
             throw new BadRequestException("Enter Valid End Date");
         }
 
